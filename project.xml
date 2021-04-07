@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	
+	<meta title="NFA-l sandbox" package="" version="1.0.0" company="Josh Chandler" />
+	<app main="Main" path="Export" file="main" />
+	
+	<source path="Source" />
+	
+	<haxelib name="openfl" />
+	
+	<assets path="Assets" rename="assets" />
+	
+	<window width="1080" height="720" background="#444455" />
+</project>
