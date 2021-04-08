@@ -4,10 +4,8 @@ import openfl.display.Sprite;
 
 class FLGraphContainer extends Sprite {
     public var digraph:DiGraph; // underlying graph data
-    private var edgesSprite:Sprite;
-    private var verticesSprite:Sprite;
-
-    private var lastVert = null;
+    public var edgesSprite(default, null):Sprite;
+    public var verticesSprite(default, null):Sprite;
 
     function new() {
         super();
@@ -31,12 +29,6 @@ class FLGraphContainer extends Sprite {
         vertDisplay.render();
 
         verticesSprite.addChild(vertDisplay);
-
-        if (lastVert != null) {
-            connectVertices(lastVert.vertexData, vertData);
-        }
-
-        lastVert = vertDisplay;
     }
 
     public function deleteVertex() {
@@ -54,7 +46,6 @@ class FLGraphContainer extends Sprite {
         
         var edgeData = new GraphEdge(a, b);
         var edgeDisplay = new FLEdge(edgeData, FLa, FLb);
-
         edgeDisplay.render();
 
         edgesSprite.addChild(edgeDisplay);

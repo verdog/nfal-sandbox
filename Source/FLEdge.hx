@@ -15,19 +15,24 @@ class FLEdge extends Sprite {
         fla = a;
         flb = b;
 
-        var position = Useful.lerpXY(a.x, a.y, b.x, b.y, .5);
-        x = position.x;
-        y = position.y;
+        mouseEnabled = false;
 
 		var textField = new TextField();
 		textField.selectable = false;
 		textField.width = 64;
 		textField.text = "edge";
+        textField.mouseEnabled = false;
 		
 		addChild(textField);
     }
 
     public function render() {
+        var position = Useful.lerpXY(fla.x, fla.y, flb.x, flb.y, .5);
+        x = position.x;
+        y = position.y;
+
+        graphics.clear();
+
         var localA = globalToLocal(new Point(fla.x, fla.y));
         var localB = globalToLocal(new Point(flb.x, flb.y));
 

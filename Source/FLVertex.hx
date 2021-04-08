@@ -1,3 +1,4 @@
+import openfl.events.MouseEvent;
 import openfl.text.TextField;
 import openfl.text.TextFormat;
 import openfl.Assets;
@@ -6,9 +7,9 @@ import format.SVG;
 
 class FLVertex extends Sprite {
     private static var svg:SVG = null;
+    
     private var text = null;
-
-    public var vertexData:GraphVertex;
+    public var vertexData(default, null):GraphVertex;
 
     public function new (vertexData:GraphVertex) {
         super();
@@ -16,15 +17,15 @@ class FLVertex extends Sprite {
 
 		var textField = new TextField();
 		
-		textField.selectable = false;
-		
 		textField.x = 0;
 		textField.y = 0;
-		textField.width = 64;
-		
+		textField.width = 32;
+		textField.selectable = false;
+		textField.mouseEnabled = false;
+
 		textField.text = vertexData.name();
 		
-		addChild(textField);
+		// addChild(textField);
     }
 
     public function render() {
