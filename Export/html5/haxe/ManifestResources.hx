@@ -66,7 +66,7 @@ import sys.FileSystem;
 
 		#else
 
-		data = '{"name":null,"assets":"ah","rootPath":null,"version":2,"libraryArgs":[],"libraryType":null}';
+		data = '{"name":null,"assets":"aoy4:pathy19:assets%2Fcircle.svgy4:sizei1762y4:typey4:TEXTy2:idR1y7:preloadtgh","rootPath":null,"version":2,"libraryArgs":[],"libraryType":null}';
 		manifest = AssetManifest.parse (data, rootPath);
 		library = AssetLibrary.fromManifest (manifest);
 		Assets.registerLibrary ("default", library);
@@ -94,11 +94,13 @@ null
 #if !display
 #if flash
 
+@:keep @:bind @:noCompletion #if display private #end class __ASSET__assets_circle_svg extends null { }
 @:keep @:bind @:noCompletion #if display private #end class __ASSET__manifest_default_json extends null { }
 
 
 #elseif (desktop || cpp)
 
+@:keep @:file("Assets/circle.svg") @:noCompletion #if display private #end class __ASSET__assets_circle_svg extends haxe.io.Bytes {}
 @:keep @:file("") @:noCompletion #if display private #end class __ASSET__manifest_default_json extends haxe.io.Bytes {}
 
 

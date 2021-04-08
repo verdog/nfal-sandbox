@@ -32,7 +32,7 @@ class ApplicationMain
 
 		ManifestResources.init(config);
 
-		app.meta["build"] = "11";
+		app.meta["build"] = "1";
 		app.meta["company"] = "Josh Chandler";
 		app.meta["file"] = "main";
 		app.meta["name"] = "NFA-l sandbox";

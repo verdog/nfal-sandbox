@@ -1,0 +1,8 @@
+- start with a single start node
+- click to make nodes
+- rms drag to connect nodes
+- lms drag to move nodes
+- convert to dfa
+- input text
+- step through sim with arrows
+- fix edge text rendering

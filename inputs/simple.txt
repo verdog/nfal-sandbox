@@ -1,0 +1,4 @@
+S: *A | *B
+A: aA | aE
+B: bB | bE
+E: *
