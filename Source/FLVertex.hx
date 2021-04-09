@@ -1,11 +1,14 @@
 import openfl.events.MouseEvent;
 import openfl.text.TextField;
 import openfl.text.TextFormat;
+import openfl.text.TextFieldAutoSize;
 import openfl.Assets;
 import openfl.display.Sprite;
 import format.SVG;
 
 class FLVertex extends Sprite {
+    public static var radius = 16;
+
     private static var svg:SVG = null;
     
     private var text = null;
@@ -17,15 +20,16 @@ class FLVertex extends Sprite {
 
 		var textField = new TextField();
 		
-		textField.x = 0;
-		textField.y = 0;
-		textField.width = 32;
+        textField.autoSize = TextFieldAutoSize.CENTER;
+		textField.width = 8;
+		textField.x = textField.width / 2;
+		textField.y = radius + 4;
 		textField.selectable = false;
 		textField.mouseEnabled = false;
 
 		textField.text = vertexData.name();
 		
-		// addChild(textField);
+		addChild(textField);
     }
 
     public function render() {

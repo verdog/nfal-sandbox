@@ -2,14 +2,19 @@
 <project>
 	
 	<meta title="NFA-l sandbox" package="" version="1.0.0" company="Josh Chandler" />
-	<app main="Main" path="Export" file="main" />
+	<app main="Main" path="Export" file="main" unless="debug"/>
+	<app main="Main" path="Export-Debug" file="main" />
 	
 	<source path="Source" />
 	
 	<haxelib name="openfl" />
 	<haxelib name="svg" />
+	<haxelib name="hxtelemetry" if="telemetry"/>
+	<haxelib name="hxcpp-debug-server" if="debug" />
 	
 	<assets path="Assets" rename="assets" />
-	
-	<window width="1080" height="720" background="#444455" />
+
+	<haxedef name="debug" if="debug" />
+
+	<window width="1080" height="720" background="#888899" />
 </project>

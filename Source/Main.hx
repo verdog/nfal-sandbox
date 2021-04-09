@@ -1,5 +1,7 @@
 package;
 
+import format.gfx.GfxTextFinder;
+import openfl.display.FPS;
 import openfl.events.Event;
 import openfl.display.DisplayObject;
 import openfl.display.InteractiveObject;
@@ -14,9 +16,11 @@ import openfl.events.MouseEvent;
 
 enum State {
 	IDLE;
-	PLACEVERTONRELEASE;
-	CONNECTINGVERT;
-	DRAGGING;
+	PLACEVERT;
+	CONNECTVERT;
+	DELETEVERT;
+	DRAGVERT;
+	DELETEEDGE;
 }
 
 class Main extends Sprite {
@@ -29,6 +33,11 @@ class Main extends Sprite {
 	static var sourceVert:FLVertex = null;
 
 	static var currentlyDragging:FLVertex = null;
+
+	private function restart() {
+		initData();
+		initState();
+	}
 
 	private function initData() {
 		trace("initializing data");
@@ -54,14 +63,17 @@ class Main extends Sprite {
 	}
 
 	public function init() {
-		initData();
-		initState();
 		stage.addEventListener(Event.ENTER_FRAME, onFrame);
 		stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouse);
 		stage.addEventListener(MouseEvent.MOUSE_UP, onMouse);
 		stage.addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, onMouse);
 		stage.addEventListener(MouseEvent.MIDDLE_MOUSE_UP, onMouse);
+		stage.addEventListener(MouseEvent.RIGHT_MOUSE_DOWN, onMouse);
+		stage.addEventListener(MouseEvent.RIGHT_MOUSE_UP, onMouse);
 		stage.addEventListener(KeyboardEvent.KEY_UP, onKey);
+
+		restart();
+		// addChild(new FPS());
 	}
 	
 	public function new() {
@@ -72,19 +84,19 @@ class Main extends Sprite {
 
 	private function onFrame(event:Event) {
 		switch state {
-			case PLACEVERTONRELEASE:
+			case PLACEVERT:
 				if (ghost != null) {
 					ghost.x = mouseX;
 					ghost.y = mouseY;
 				}
-			case CONNECTINGVERT:
+			case CONNECTVERT:
 				if (ghost != null) {
 					ghost.graphics.clear();
 					ghost.graphics.lineStyle(3, 0xff00ff, .2);
 					ghost.graphics.moveTo(0, 0);
 					ghost.graphics.lineTo(ghost.mouseX, ghost.mouseY);
 				}
-			case DRAGGING:
+			case DRAGVERT:
 				if (currentlyDragging != null) {
 					currentlyDragging.x = mouseX;
 					currentlyDragging.y = mouseY;
@@ -132,7 +144,7 @@ class Main extends Sprite {
 					ghost.mouseEnabled = false;
 					addChild(ghost);
 
-					changeState(PLACEVERTONRELEASE);
+					changeState(PLACEVERT);
 				} else if (event.type == MouseEvent.MOUSE_DOWN && nothing == false) {
 					var vert = getThingFromThings(FLVertex, things);
 					
@@ -145,18 +157,27 @@ class Main extends Sprite {
 
 						addChild(ghost);
 
-						changeState(CONNECTINGVERT);
+						changeState(CONNECTVERT);
 					}
 				} else if (event.type == MouseEvent.MIDDLE_MOUSE_DOWN && nothing == false) {
 					var vert = getThingFromThings(FLVertex, things);
 
 					if (vert != null) {
+						changeState(DRAGVERT);
 						currentlyDragging = vert;
-						changeState(DRAGGING);
+					}
+				} else if (event.type == MouseEvent.RIGHT_MOUSE_DOWN && nothing == false) {
+					var vert = getThingFromThings(FLVertex, things);
+					if (vert != null) {
+						changeState(DELETEVERT);
+					}
+
+					var edgeHandle = getThingFromThings(FLEdgeHandle, things);
+					if (edgeHandle != null) {
+						changeState(DELETEEDGE);
 					}
 				}
-			
-			case PLACEVERTONRELEASE:
+			case PLACEVERT:
 				if (event.type == MouseEvent.MOUSE_UP && nothing == true) {
 					graph.addVertex(event.stageX, event.stageY);
 				}
@@ -165,8 +186,7 @@ class Main extends Sprite {
 				ghost = null;
 
 				changeState(IDLE);
-
-			case CONNECTINGVERT:
+			case CONNECTVERT:
 				if (event.type == MouseEvent.MOUSE_UP && nothing == false) {
 					var vert = getThingFromThings(FLVertex, things);
 
@@ -179,13 +199,49 @@ class Main extends Sprite {
 				ghost = null;
 
 				changeState(IDLE);
+				case DRAGVERT:
 
-			case DRAGGING:
 				if (event.type == MouseEvent.MIDDLE_MOUSE_UP) {
 					currentlyDragging = null;
 					changeState(IDLE);
 				}
+			case DELETEVERT:
+				if (event.type == MouseEvent.RIGHT_MOUSE_UP && nothing == false) {
+					var vert = getThingFromThings(FLVertex, things);
+					if (vert != null) {
+						var marked = new Array<FLEdge>();
+						for (i in 0...graph.edgesSprite.numChildren) {
+							var edge:FLEdge = cast graph.edgesSprite.getChildAt(i);
+							var edgeData = edge.edgeData;
+							var vertData = vert.vertexData;
 
+							if (edgeData.source.id == vertData.id || edgeData.sink.id == vertData.id) {
+								marked.push(edge);
+							}
+						}
+						
+						for (edge in marked) {
+							graph.edgesSprite.removeChild(edge);
+						}
+						
+						graph.verticesSprite.removeChild(vert);
+						
+						graph.deleteVertex(vert.vertexData);
+					}
+				}
+
+				changeState(IDLE);
+			case DELETEEDGE:
+				if (event.type == MouseEvent.RIGHT_MOUSE_UP && nothing == false) {
+					var edgehandle = getThingFromThings(FLEdgeHandle, things);
+					if (edgehandle != null) {
+						graph.edgesSprite.removeChild(edgehandle.fledge);
+					}
+
+					graph.deleteEdge(edgehandle.fledge.edgeData);
+				}
+
+				changeState(IDLE);
 			default:
 				// nothing
 		}
@@ -195,7 +251,7 @@ class Main extends Sprite {
 		trace(event);
 		// r
 		if (event.charCode == 114) {
-			initData();
+			restart();
 		}
 	}
 

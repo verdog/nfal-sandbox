@@ -15,9 +15,17 @@ class DiGraph {
 		vertices.set(node.id, node);
 	}
 
+	public function deleteVertex(vertex:GraphVertex) {
+		vertices.remove(vertex.id);
+	}
+
 	public function connectVertices(source:GraphVertex, sink:GraphVertex) {
 		var edge = new GraphEdge(source, sink);
 		edges.set(edge.id, edge);
+	}
+
+	public function deleteEdge(edge:GraphEdge) {
+		edges.remove(edge.id);
 	}
 
     public function fromText(text:String) {

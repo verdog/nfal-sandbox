@@ -31,8 +31,8 @@ class FLGraphContainer extends Sprite {
         verticesSprite.addChild(vertDisplay);
     }
 
-    public function deleteVertex() {
-
+    public function deleteVertex(vert:GraphVertex) {
+        digraph.deleteVertex(vert);
     }
 
     public function connectVertices(a:GraphVertex, b:GraphVertex) {
@@ -49,6 +49,10 @@ class FLGraphContainer extends Sprite {
         edgeDisplay.render();
 
         edgesSprite.addChild(edgeDisplay);
+    }
+
+    public function deleteEdge(edge:GraphEdge) {
+        digraph.deleteEdge(edge);
     }
 
     public function render() {

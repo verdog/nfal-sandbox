@@ -3,11 +3,14 @@ class GraphEdge {
     
     public final source:GraphVertex;
     public final sink:GraphVertex;
+    public var symbol:String;
+
     public var id(default, null):Int;
 
     public function new(source:GraphVertex, sink:GraphVertex) {
         this.source = source;
         this.sink = sink;
+        symbol = "*";
 
         id = _nextId++;
         trace('created an edge with id $id');
