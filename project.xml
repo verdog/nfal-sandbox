@@ -3,7 +3,7 @@
 	
 	<meta title="NFA-l sandbox" package="" version="1.0.0" company="Josh Chandler" />
 	<app main="Main" path="Export" file="main" unless="debug"/>
-	<app main="Main" path="Export-Debug" file="main" />
+	<app main="Main" path="Export-Debug" file="main" if="debug"/>
 	
 	<source path="Source" />
 	

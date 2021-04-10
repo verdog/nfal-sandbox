@@ -39,6 +39,8 @@ class Main extends Sprite {
 	static var currentlyDraggingEdge:FLEdgeHandle = null;
 	static var dragStart:Point = null;
 
+	static var CTRL:Bool = false;
+
 	private function restart() {
 		initData();
 		initState();
@@ -79,7 +81,11 @@ class Main extends Sprite {
 		stage.addEventListener(MouseEvent.MIDDLE_MOUSE_UP, onMouse);
 		stage.addEventListener(MouseEvent.RIGHT_MOUSE_DOWN, onMouse);
 		stage.addEventListener(MouseEvent.RIGHT_MOUSE_UP, onMouse);
+
+		stage.addEventListener(KeyboardEvent.KEY_DOWN, onKey);
 		stage.addEventListener(KeyboardEvent.KEY_UP, onKey);
+
+		stage.showDefaultContextMenu = false;
 
 		restart();
 		// addChild(new FPS());
@@ -154,7 +160,24 @@ class Main extends Sprite {
 
 		switch state {
 			case IDLE:
-				if (event.type == MouseEvent.MOUSE_DOWN && nothing == true) {
+				if ((event.type == MouseEvent.MIDDLE_MOUSE_DOWN 
+					|| event.type == MouseEvent.MOUSE_DOWN && CTRL == true)
+						&& nothing == false) {
+					var vert = getThingFromThings(FLVertex, things);
+
+					if (vert != null) {
+						changeState(DRAGVERT);
+						dragStart = new Point(mouseX, mouseY);
+						currentlyDraggingVert = vert;
+					}
+
+					var edgehandle = getThingFromThings(FLEdgeHandle, things);
+
+					if (edgehandle != null) {
+						changeState(DRAGEDGE);
+						currentlyDraggingEdge = edgehandle;
+					}
+				} else if (event.type == MouseEvent.MOUSE_DOWN && nothing == true) {
 					ghost = new Sprite();
 					ghost.graphics.beginFill(0xff00ff, 0.2);
 					ghost.graphics.drawCircle(0, 0, 16);
@@ -175,21 +198,6 @@ class Main extends Sprite {
 						addChild(ghost);
 
 						changeState(CONNECTVERT);
-					}
-				} else if (event.type == MouseEvent.MIDDLE_MOUSE_DOWN && nothing == false) {
-					var vert = getThingFromThings(FLVertex, things);
-
-					if (vert != null) {
-						changeState(DRAGVERT);
-						dragStart = new Point(mouseX, mouseY);
-						currentlyDraggingVert = vert;
-					}
-
-					var edgehandle = getThingFromThings(FLEdgeHandle, things);
-
-					if (edgehandle != null) {
-						changeState(DRAGEDGE);
-						currentlyDraggingEdge = edgehandle;
 					}
 				} else if (event.type == MouseEvent.RIGHT_MOUSE_DOWN && nothing == false) {
 					var vert = getThingFromThings(FLVertex, things);
@@ -225,14 +233,12 @@ class Main extends Sprite {
 
 				changeState(IDLE);
 			case DRAGVERT:
-				if (event.type == MouseEvent.MIDDLE_MOUSE_UP) {
-					if (Point.distance(dragStart, new Point(mouseX, mouseY)) < 10) {
-						currentlyDraggingVert.vertexData.accepting = !currentlyDraggingVert.vertexData.accepting;
-						currentlyDraggingVert.render();
-					}
-					currentlyDraggingVert = null;
-					changeState(IDLE);
+				if (Point.distance(dragStart, new Point(mouseX, mouseY)) < 10) {
+					currentlyDraggingVert.vertexData.accepting = !currentlyDraggingVert.vertexData.accepting;
+					currentlyDraggingVert.render();
 				}
+				currentlyDraggingVert = null;
+				changeState(IDLE);
 			case DELETEVERT:
 				if (event.type == MouseEvent.RIGHT_MOUSE_UP && nothing == false) {
 					var vert = getThingFromThings(FLVertex, things);
@@ -260,10 +266,8 @@ class Main extends Sprite {
 				
 				changeState(IDLE);
 			case DRAGEDGE:
-				if (event.type == MouseEvent.MIDDLE_MOUSE_UP) {
-					currentlyDraggingEdge = null;
-					changeState(IDLE);
-				}
+				currentlyDraggingEdge = null;
+				changeState(IDLE);
 			case DELETEEDGE:
 				if (event.type == MouseEvent.RIGHT_MOUSE_UP && nothing == false) {
 					var edgehandle = getThingFromThings(FLEdgeHandle, things);
@@ -283,8 +287,15 @@ class Main extends Sprite {
 	private function onKey(event:KeyboardEvent) {
 		trace(event);
 		// r
-		if (event.charCode == 114) {
+		if (event.type == KeyboardEvent.KEY_UP && event.charCode == 114) {
 			restart();
+		}
+		// ctrl
+		if (event.type == KeyboardEvent.KEY_DOWN && event.keyCode == 17 && event.keyLocation == 1) {
+			CTRL = true;
+		}
+		if (event.type == KeyboardEvent.KEY_UP && event.keyCode == 17 && event.keyLocation == 1) {
+			CTRL = false;
 		}
 	}
 
