@@ -21,6 +21,8 @@ class DiGraph {
 			var node = new GraphVertex();
 		}
 		vertices.set(node.id, node);
+
+		return vertices[node.id];
 	}
 
 	public function deleteVertex(vertex:GraphVertex) {
@@ -29,6 +31,12 @@ class DiGraph {
 
 	public function connectVertices(source:GraphVertex, sink:GraphVertex, symbol:String) {
 		var edge = new GraphEdge(source, sink, symbol);
+		edges.set(edge.id, edge);
+
+		return edges[edge.id];
+	}
+
+	public function addEdge(edge:GraphEdge) {
 		edges.set(edge.id, edge);
 	}
 
@@ -73,15 +81,21 @@ class DiGraph {
 					// get symbol
 					var symbol = l.charAt(0);
 
-					// get sink
-					var sinkName = l.substring(1, getEndIdx(l));
-					var existingSink = findVertexByName(sinkName);
-					var sink = if (existingSink != null) existingSink else new GraphVertex();
-					if (existingSink == null) sink.name = sinkName;
-
-					addVertex(source);
-					addVertex(sink);
-					connectVertices(source, sink, symbol);
+					// is this symbol a lambda transition or an acceptance marker?
+					if (symbol == "*" && getEndIdx(l) == 1) {
+						// it's an accepting marker
+						source.accepting = true;
+					} else {
+						// get sink
+						var sinkName = l.substring(1, getEndIdx(l));
+						var existingSink = findVertexByName(sinkName);
+						var sink = if (existingSink != null) existingSink else new GraphVertex();
+						if (existingSink == null) sink.name = sinkName;
+						
+						addVertex(source);
+						addVertex(sink);
+						connectVertices(source, sink, symbol);
+					}
 
 					l = l.substring(getEndIdx(l));
 				}
@@ -120,5 +134,13 @@ class DiGraph {
 		}
 
 		return minEnd;
+	}
+
+	public function numVertices() {
+		var count = 0;
+		for (k in vertices.keys()) {
+			count++;
+		}
+		return count;
 	}
 }

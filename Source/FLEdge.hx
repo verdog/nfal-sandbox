@@ -24,6 +24,11 @@ class FLEdge extends Sprite {
         mouseEnabled = false;
 
         handle = new FLEdgeHandle(this);
+
+        if (edgeData.source.id == edgeData.sink.id) {
+            handle.y = -(FLVertex.radius + 40);
+        }
+
         addChild(handle);
 
 		textF = new TextField();
@@ -58,30 +63,49 @@ class FLEdge extends Sprite {
         // draw line
 		graphics.lineStyle (2, color);
         graphics.moveTo(localA.x, localA.y);
-		graphics.curveTo(handle.x, handle.y, localB.x, localB.y);
+        
+        var toHandle = if (edgeData.source.id != edgeData.sink.id) new Point(handle.x, handle.y) else new Point(); // will be filled in below
+
+        if (edgeData.source.id != edgeData.sink.id) {
+            graphics.curveTo(handle.x, handle.y, localB.x, localB.y);
+        } else {
+            var handleP = new Point(handle.x, handle.y);
+            var subHandle = new Point(handle.x, handle.y);
+            subHandle.normalize(Point.distance(localA, handleP));
+
+            var middle = Point.interpolate(localA, handleP, .5);
+
+            rotatePoint(subHandle, Math.PI/2);
+            graphics.curveTo(subHandle.x + middle.x, subHandle.y + middle.y, handle.x, handle.y);
+
+            rotatePoint(subHandle, Math.PI);
+            graphics.curveTo(subHandle.x + middle.x, subHandle.y + middle.y, localA.x, localA.y);
+
+            toHandle.setTo(subHandle.x + middle.x, subHandle.y + middle.y);
+        }
 
         // calculate tip
-        var dirToB = new Point(localB.x - handle.x, localB.y - handle.y);
-        dirToB.normalize(FLVertex.radius);
+        var arrowDir = new Point(localB.x - toHandle.x, localB.y - toHandle.y);
+        arrowDir.normalize(FLVertex.radius);
 
         var tip = localB.clone();
-        tip.offset(-dirToB.x, -dirToB.y);
+        tip.offset(-arrowDir.x, -arrowDir.y);
 
-        // reuse dirToB
-        dirToB.normalize(12);
-        rotatePoint(dirToB, 3*Math.PI/4);
-        
         // draw the triangle
+        // reuse arrowDir for triangle sides
+        arrowDir.normalize(12);
+        rotatePoint(arrowDir, 3*Math.PI/4);
+        
         // graphics.drawCircle(tip.x, tip.y, 5);
 
         graphics.beginFill(color);
         graphics.lineStyle(1, color);
 
         graphics.moveTo(tip.x, tip.y);
-        graphics.lineTo(tip.x + dirToB.x, tip.y + dirToB.y);
+        graphics.lineTo(tip.x + arrowDir.x, tip.y + arrowDir.y);
 
-        rotatePoint(dirToB, Math.PI/2);
-        graphics.lineTo(tip.x + dirToB.x, tip.y + dirToB.y);
+        rotatePoint(arrowDir, Math.PI/2);
+        graphics.lineTo(tip.x + arrowDir.x, tip.y + arrowDir.y);
         graphics.lineTo(tip.x, tip.y);
 
         // update text

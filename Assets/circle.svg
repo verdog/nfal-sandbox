@@ -51,12 +51,13 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
-    <circle
-       style="fill:#cccccc;stroke-width:2.062;stroke-linecap:square;stroke-linejoin:bevel;stroke:#606060;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+    <ellipse
+       style="fill:#cccccc;stroke:#606060;stroke-width:3.63218;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path833"
-       cx="0"
-       cy="0"
-       r="16"
-       transform="scale(-1,1)" />
+       cx="-4.1723251e-06"
+       cy="2.2649765e-06"
+       transform="scale(-1,1)"
+       rx="28.183914"
+       ry="28.183912" />
   </g>
 </svg>

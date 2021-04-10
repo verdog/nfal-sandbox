@@ -9,4 +9,6 @@
 + edit edge letters
 + delete edges
 + delete verts
-- generate graphical graph from data
++ generate graphical graph from data
++ display loops better
+- add alternative control to mmb (ctrl or shift)

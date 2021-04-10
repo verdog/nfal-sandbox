@@ -7,7 +7,7 @@ import openfl.display.Sprite;
 import format.SVG;
 
 class FLVertex extends Sprite {
-    public static var radius = 16;
+    public static var radius = 30;
 
     private static var svg:SVG = null;
     
@@ -34,7 +34,16 @@ class FLVertex extends Sprite {
 
     public function render() {
         if (svg == null) loadSVG();
+
+        graphics.clear();
+
         svg.render(graphics);
+
+        if (vertexData.accepting == true) {
+            graphics.moveTo(0, 0);
+            graphics.lineStyle(1, 0x00ffff);
+            graphics.drawCircle(0, 0, radius + 4);
+        }
     }
 
     private function loadSVG() {

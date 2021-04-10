@@ -13,6 +13,7 @@ import format.SVG;
 import openfl.display.Sprite;
 import openfl.Assets;
 import openfl.events.MouseEvent;
+import openfl.geom.Point;
 
 enum State {
 	IDLE;
@@ -36,6 +37,7 @@ class Main extends Sprite {
 
 	static var currentlyDraggingVert:FLVertex = null;
 	static var currentlyDraggingEdge:FLEdgeHandle = null;
+	static var dragStart:Point = null;
 
 	private function restart() {
 		initData();
@@ -49,6 +51,7 @@ class Main extends Sprite {
 
 		graph.digraph.fromFile("inputs/simple.txt");
 
+		graph.render();
 		addChild(graph);
 	}
 
@@ -178,6 +181,7 @@ class Main extends Sprite {
 
 					if (vert != null) {
 						changeState(DRAGVERT);
+						dragStart = new Point(mouseX, mouseY);
 						currentlyDraggingVert = vert;
 					}
 
@@ -222,6 +226,10 @@ class Main extends Sprite {
 				changeState(IDLE);
 			case DRAGVERT:
 				if (event.type == MouseEvent.MIDDLE_MOUSE_UP) {
+					if (Point.distance(dragStart, new Point(mouseX, mouseY)) < 10) {
+						currentlyDraggingVert.vertexData.accepting = !currentlyDraggingVert.vertexData.accepting;
+						currentlyDraggingVert.render();
+					}
 					currentlyDraggingVert = null;
 					changeState(IDLE);
 				}
