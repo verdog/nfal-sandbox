@@ -9,6 +9,8 @@
 	
 	<haxelib name="openfl" />
 	<haxelib name="svg" />
+	<haxelib name="haxeui-core" />
+    <haxelib name="haxeui-openfl" />
 	<haxelib name="hxtelemetry" if="telemetry"/>
 	<haxelib name="hxcpp-debug-server" if="debug" />
 	

@@ -1,12 +1,12 @@
-- start with a single start node
 + click to make nodes
 + lms drag to connect nodes
 + mms drag to move nodes
 - convert to dfa
 - input text
 - step through sim with arrows
-- fix edge text rendering
-- smarter edge shapes
-- edit edge letters
++ fix edge text rendering
++ smarter edge shapes
++ edit edge letters
 + delete edges
 + delete verts
+- generate graphical graph from data

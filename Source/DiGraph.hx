@@ -29,10 +29,10 @@ class DiGraph {
 	}
 
     public function fromText(text:String) {
-        vertices.clear();
-        edges.clear();
+        // vertices.clear();
+        // edges.clear();
 
-        trace("Building digraph from text:");
+        // trace("Building digraph from text:");
         // Sys.print(text);
 
 		// for (l in text.split("\n")) {

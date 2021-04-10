@@ -8,6 +8,6 @@ class FLEdgeHandle extends Sprite {
         this.fledge = edge;
 
         graphics.beginFill(0xaaaaaa);
-        graphics.drawCircle(0, 0, 4);
+        graphics.drawCircle(0, 0, 6);
     }
 }

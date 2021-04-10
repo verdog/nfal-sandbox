@@ -21,18 +21,21 @@ enum State {
 	DELETEVERT;
 	DRAGVERT;
 	DELETEEDGE;
+	DRAGEDGE;
 }
 
 class Main extends Sprite {
 	static var graph:FLGraphContainer;
 	static var state:State = IDLE;
 	static var stateText:TextField = null;
+	static var ui:UI;
 
 	static var ghost:Sprite = null;
 
 	static var sourceVert:FLVertex = null;
 
-	static var currentlyDragging:FLVertex = null;
+	static var currentlyDraggingVert:FLVertex = null;
+	static var currentlyDraggingEdge:FLEdgeHandle = null;
 
 	private function restart() {
 		initData();
@@ -78,7 +81,7 @@ class Main extends Sprite {
 	
 	public function new() {
 		super();
-
+		// ui = new UI();
 		init();
 	}
 
@@ -97,19 +100,27 @@ class Main extends Sprite {
 					ghost.graphics.lineTo(ghost.mouseX, ghost.mouseY);
 				}
 			case DRAGVERT:
-				if (currentlyDragging != null) {
-					currentlyDragging.x = mouseX;
-					currentlyDragging.y = mouseY;
+				if (currentlyDraggingVert != null) {
+					currentlyDraggingVert.x = mouseX;
+					currentlyDraggingVert.y = mouseY;
 
 					for (i in 0...graph.edgesSprite.numChildren) {
 						var edge:FLEdge = cast graph.edgesSprite.getChildAt(i);
 						var edgeData = edge.edgeData;
 
-						if (edgeData.source.id == currentlyDragging.vertexData.id
-							|| edgeData.sink.id == currentlyDragging.vertexData.id) {
+						if (edgeData.source.id == currentlyDraggingVert.vertexData.id
+							|| edgeData.sink.id == currentlyDraggingVert.vertexData.id) {
 							edge.render();
 						}
 					}
+				}
+			case DRAGEDGE:
+				if (currentlyDraggingEdge != null) {
+					var mousep = new Point(mouseX, mouseY);
+					var localMousep = currentlyDraggingEdge.parent.globalToLocal(mousep);
+					currentlyDraggingEdge.x = localMousep.x;
+					currentlyDraggingEdge.y = localMousep.y;
+					currentlyDraggingEdge.fledge.render();
 				}
 			default:
 				// do nothing
@@ -164,7 +175,14 @@ class Main extends Sprite {
 
 					if (vert != null) {
 						changeState(DRAGVERT);
-						currentlyDragging = vert;
+						currentlyDraggingVert = vert;
+					}
+
+					var edgehandle = getThingFromThings(FLEdgeHandle, things);
+
+					if (edgehandle != null) {
+						changeState(DRAGEDGE);
+						currentlyDraggingEdge = edgehandle;
 					}
 				} else if (event.type == MouseEvent.RIGHT_MOUSE_DOWN && nothing == false) {
 					var vert = getThingFromThings(FLVertex, things);
@@ -199,10 +217,9 @@ class Main extends Sprite {
 				ghost = null;
 
 				changeState(IDLE);
-				case DRAGVERT:
-
+			case DRAGVERT:
 				if (event.type == MouseEvent.MIDDLE_MOUSE_UP) {
-					currentlyDragging = null;
+					currentlyDraggingVert = null;
 					changeState(IDLE);
 				}
 			case DELETEVERT:
@@ -214,7 +231,7 @@ class Main extends Sprite {
 							var edge:FLEdge = cast graph.edgesSprite.getChildAt(i);
 							var edgeData = edge.edgeData;
 							var vertData = vert.vertexData;
-
+							
 							if (edgeData.source.id == vertData.id || edgeData.sink.id == vertData.id) {
 								marked.push(edge);
 							}
@@ -229,8 +246,13 @@ class Main extends Sprite {
 						graph.deleteVertex(vert.vertexData);
 					}
 				}
-
+				
 				changeState(IDLE);
+			case DRAGEDGE:
+				if (event.type == MouseEvent.MIDDLE_MOUSE_UP) {
+					currentlyDraggingEdge = null;
+					changeState(IDLE);
+				}
 			case DELETEEDGE:
 				if (event.type == MouseEvent.RIGHT_MOUSE_UP && nothing == false) {
 					var edgehandle = getThingFromThings(FLEdgeHandle, things);

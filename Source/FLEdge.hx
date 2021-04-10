@@ -42,7 +42,7 @@ class FLEdge extends Sprite {
 
         addEventListener(TextEvent.TEXT_INPUT, onTextChange);
 
-		addChild(textF);
+		handle.addChild(textF);
     }
 
     public function render() {
@@ -58,10 +58,10 @@ class FLEdge extends Sprite {
         // draw line
 		graphics.lineStyle (2, color);
         graphics.moveTo(localA.x, localA.y);
-		graphics.lineTo(localB.x, localB.y);
+		graphics.curveTo(handle.x, handle.y, localB.x, localB.y);
 
         // calculate tip
-        var dirToB = localB.clone();
+        var dirToB = new Point(localB.x - handle.x, localB.y - handle.y);
         dirToB.normalize(FLVertex.radius);
 
         var tip = localB.clone();
