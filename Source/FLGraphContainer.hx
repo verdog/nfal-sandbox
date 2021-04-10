@@ -24,6 +24,8 @@ class FLGraphContainer extends Sprite {
         var vertData = new GraphVertex();
         var vertDisplay = new FLVertex(vertData);
 
+        digraph.addVertex(vertData);
+
         vertDisplay.x = x;
         vertDisplay.y = y;
         vertDisplay.render();
@@ -35,7 +37,7 @@ class FLGraphContainer extends Sprite {
         digraph.deleteVertex(vert);
     }
 
-    public function connectVertices(a:GraphVertex, b:GraphVertex) {
+    public function connectVertices(a:GraphVertex, b:GraphVertex, s:String) {
         var FLa = reverseLookupVertex(a);
         var FLb = reverseLookupVertex(b);
 
@@ -44,7 +46,7 @@ class FLGraphContainer extends Sprite {
             return;
         }
         
-        var edgeData = new GraphEdge(a, b);
+        var edgeData = new GraphEdge(a, b, s);
         var edgeDisplay = new FLEdge(edgeData, FLa, FLb);
         edgeDisplay.render();
 

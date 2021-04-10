@@ -27,7 +27,7 @@ class FLVertex extends Sprite {
 		textField.selectable = false;
 		textField.mouseEnabled = false;
 
-		textField.text = vertexData.name();
+		textField.text = vertexData.name;
 		
 		addChild(textField);
     }

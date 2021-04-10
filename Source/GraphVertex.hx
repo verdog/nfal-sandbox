@@ -3,18 +3,17 @@ class GraphVertex {
 
     public final id:Int;
     public var accepting(default, null):Bool;
-
-    private var _name:String;
+    public var name(get, default):String;
 
     public function new() {
         id = _nextId++;
         accepting = false;
-        _name = "";
+        name = "";
 
         trace('Created new vertex with id $id');
     }
 
-    public function name() {
-        if (_name != "") return _name else return 'q$id';
+    private function get_name() {
+        if (name != "") return name else return 'q$id';
     }
 }

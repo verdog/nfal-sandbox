@@ -46,6 +46,9 @@ class Main extends Sprite {
 		trace("initializing data");
 		removeChildren();
 		graph = new FLGraphContainer();
+
+		graph.digraph.fromFile("inputs/simple.txt");
+
 		addChild(graph);
 	}
 
@@ -209,7 +212,7 @@ class Main extends Sprite {
 					var vert = getThingFromThings(FLVertex, things);
 
 					if (vert != null) {
-						graph.connectVertices(sourceVert.vertexData, vert.vertexData);
+						graph.connectVertices(sourceVert.vertexData, vert.vertexData, "*");
 					}
 				}
 

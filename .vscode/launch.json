@@ -8,7 +8,7 @@
             "name": "HXCPP",
             "type": "hxcpp",
             "request": "launch",
-            "program": "${workspaceFolder}/Export-Debug/linux/bin/main"
+            "program": "${workspaceFolder}/Export-Debug/linux/bin/main",
         }
     ]
 }
