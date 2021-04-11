@@ -51,7 +51,10 @@ class Main extends Sprite {
 		removeChildren();
 		graph = new FLGraphContainer();
 
-		graph.digraph.fromFile("inputs/simple.txt");
+		var start = new GraphVertex();
+		start.name = "Start";
+		graph.digraph.addVertex(start);
+		graph.digraph.starting = start;
 
 		graph.render();
 		addChild(graph);
@@ -242,7 +245,7 @@ class Main extends Sprite {
 			case DELETEVERT:
 				if (event.type == MouseEvent.RIGHT_MOUSE_UP && nothing == false) {
 					var vert = getThingFromThings(FLVertex, things);
-					if (vert != null) {
+					if (vert != null && graph.digraph.starting.id != vert.vertexData.id) {
 						var marked = new Array<FLEdge>();
 						for (i in 0...graph.edgesSprite.numChildren) {
 							var edge:FLEdge = cast graph.edgesSprite.getChildAt(i);
@@ -296,6 +299,11 @@ class Main extends Sprite {
 		}
 		if (event.type == KeyboardEvent.KEY_UP && event.keyCode == 17 && event.keyLocation == 1) {
 			CTRL = false;
+		}
+		// d
+		if (event.type == KeyboardEvent.KEY_UP && event.charCode == 100) {
+			graph.digraph = graph.digraph.toDFA();
+			graph.render();
 		}
 	}
 

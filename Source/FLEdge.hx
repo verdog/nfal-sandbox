@@ -8,8 +8,8 @@ import openfl.display.Sprite;
 class FLEdge extends Sprite {
     public static var color = 0x777777;
 
-    private var textF:TextField;
-    private var handle:FLEdgeHandle;
+    public var textF(default, null):TextField;
+    public var handle:FLEdgeHandle;
 
     public var edgeData:GraphEdge;
     public var fla(default, null):FLVertex;

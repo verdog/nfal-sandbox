@@ -1,7 +1,7 @@
 + click to make nodes
 + lms drag to connect nodes
 + mms drag to move nodes
-- convert to dfa
++ convert to dfa
 - input text
 - step through sim with arrows
 + fix edge text rendering
@@ -12,3 +12,4 @@
 + generate graphical graph from data
 + display loops better
 + add alternative control to mmb (ctrl or shift)
+- make pressing d key smarter

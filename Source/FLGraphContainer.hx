@@ -54,6 +54,8 @@ class FLGraphContainer extends Sprite {
         edgeDisplay.render();
 
         edgesSprite.addChild(edgeDisplay);
+
+        stage.focus = edgeDisplay.textF;
     }
 
     public function deleteEdge(edge:GraphEdge) {
@@ -61,13 +63,15 @@ class FLGraphContainer extends Sprite {
     }
 
     public function render() {
-        var minX = 200;
-        var minY = 200;
-        var space = FLVertex.radius * 4;
+        var minX = 300;
+        var minY = 300;
+        var space = FLVertex.radius * 6;
         var placeX = minX;
         var placeY = minY;
         var row = 0;
         var columns = Std.int(Math.sqrt(digraph.numVertices() + 1) * 2);
+
+        var trap:GraphVertex;
 
         // TODO: check if this is a memory leak...
         verticesSprite.removeChildren();
@@ -91,10 +95,21 @@ class FLGraphContainer extends Sprite {
                 placeX = minX;
                 placeY += space;
             }
+
+            if (vert.name == "{}") {
+                trap = vert;
+            }
         }
+
+        var edgeCounts = new Map<String, Int>();
 
         for (id => edge in digraph.edges) {
             var edgeData = edge;
+
+            var edgeIds = [edge.source.id, edge.sink.id];
+            edgeIds.sort(function(x,y) return y - x);
+            var edgeString = '${edgeIds[0]}---${edgeIds[1]}';
+
             var FLa = reverseLookupVertex(edge.source);
             var FLb = reverseLookupVertex(edge.sink);
 
@@ -104,8 +119,15 @@ class FLGraphContainer extends Sprite {
             }
             
             var edgeDisplay = new FLEdge(edgeData, FLa, FLb);
-            edgeDisplay.render();
 
+            if (!edgeCounts.exists(edgeString)) edgeCounts.set(edgeString, 0);
+
+            edgeDisplay.handle.y += edgeCounts[edgeString] * -50;
+            edgeDisplay.render();
+            if (trap != null && edge.sink.id == trap.id) {
+                edgeDisplay.alpha = 0.25;
+            }
+            edgeCounts[edgeString] += 1;
             edgesSprite.addChild(edgeDisplay);
         }
     }
