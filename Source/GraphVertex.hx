@@ -3,6 +3,7 @@ class GraphVertex {
 
     public final id:Int;
     public var accepting:Bool;
+    public var starting:Bool = false;
     public var name(get, default):String;
 
     public function new() {

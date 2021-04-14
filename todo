@@ -2,7 +2,7 @@
 + lms drag to connect nodes
 + mms drag to move nodes
 + convert to dfa
-- input text
++ input text
 - step through sim with arrows
 + fix edge text rendering
 + smarter edge shapes
@@ -12,4 +12,9 @@
 + generate graphical graph from data
 + display loops better
 + add alternative control to mmb (ctrl or shift)
-- make pressing d key smarter
++ make pressing d key smarter
+- auto arrange on points of hexagon grid
++ clearly mark starting state
++ make handle distance squared
++ fix arrow directions
+- make things look nicer

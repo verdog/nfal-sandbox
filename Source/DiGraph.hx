@@ -8,7 +8,7 @@ import haxe.ds.GenericStack;
 class DiGraph {
 	public var vertices(default, null):Map<Int, GraphVertex>;
 	public var edges(default, null):Map<Int, GraphEdge>;
-	public var starting:GraphVertex;
+	public var starting(default, set):GraphVertex;
 
 	public function new() {
 		vertices = new Map<Int, GraphVertex>();
@@ -178,7 +178,7 @@ class DiGraph {
 		nodeSets.set(start.id, lClosure(starting));
 		DFA.addVertex(start);
 		DFA.starting = start;
-		
+
 		// remove old trap state from current graph if its there.
 		// it will mess up later calculations
 		for (id => vert in vertices) {
@@ -200,7 +200,7 @@ class DiGraph {
 				break;
 			}
 		}
-		
+
 		// create trap state
 		var trap = new GraphVertex();
 		trap.name = "{}";
@@ -320,5 +320,78 @@ class DiGraph {
 		}
 
 		return set;
+	}
+
+	private function set_starting(vert:GraphVertex) {
+		if (this.starting != null) {
+			this.starting.starting = false;
+		}
+
+		this.starting = vert;
+
+		if (vert != null) {
+			vert.starting = true;
+		}
+
+		return this.starting;
+	}
+
+	public function simulate(input:String) {
+		trace('Processing "$input"');
+		var node = starting;
+		var broken = false;
+		var to = "   ";
+
+		while (input != "") {
+			var c = input.charAt(0);
+			var jumped = false;
+
+			trace('$to [${node.name}, $input]');
+			to = "|- ";
+
+			var outgoing = getOutgoingEdges(node, c);
+			if (outgoing.length == 0) {
+				trace('nowhere to go on symbol ${c}!');
+			} else if (outgoing.length > 1) {
+				trace('more than one choice...');
+			} else {
+				// length one
+				var edge = edges[0];
+				node = edge.sink;
+				input = input.substring(1);
+				jumped = true;
+			}
+
+			if (jumped == false) {
+				broken = true;
+				trace("broke simulation");
+				break;
+			}
+		}
+
+		trace('$to [${node.name}, $input]');
+
+		trace('Ended ${if (broken == true) "broken " else ""}on state ${node.name} which is ${if (node.accepting == true) "" else "not "}accepting');
+		trace('${if (node.accepting == true) "ACCEPT" else "REJECT"}');
+	}
+
+	private function getOutgoingEdges(vert:GraphVertex, symbol:String = null) {
+		var edges = [];
+
+		for (id => edge in this.edges) {
+			if (symbol == null) {
+				// no symbol specified
+				if (edge.source.id == vert.id) {
+					edges.push(edge);
+				}
+			} else {
+				// symbol specified
+				if (edge.source.id == vert.id && edge.symbol == symbol) {
+					edges.push(edge);
+				}
+			}
+		}
+
+		return edges;
 	}
 }

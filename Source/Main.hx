@@ -290,7 +290,7 @@ class Main extends Sprite {
 	private function onKey(event:KeyboardEvent) {
 		trace(event);
 		// r
-		if (event.type == KeyboardEvent.KEY_UP && event.charCode == 114) {
+		if (event.type == KeyboardEvent.KEY_UP && event.charCode == 114 && CTRL == true) {
 			restart();
 		}
 		// ctrl
@@ -300,10 +300,14 @@ class Main extends Sprite {
 		if (event.type == KeyboardEvent.KEY_UP && event.keyCode == 17 && event.keyLocation == 1) {
 			CTRL = false;
 		}
-		// d
-		if (event.type == KeyboardEvent.KEY_UP && event.charCode == 100) {
+		// d - dfa
+		if (event.type == KeyboardEvent.KEY_UP && event.charCode == 100 && CTRL == true) {
 			graph.digraph = graph.digraph.toDFA();
 			graph.render();
+		}
+		// s - simulate
+		if (event.type == KeyboardEvent.KEY_UP && event.charCode == 115 && CTRL == true) {
+			graph.simulate();
 		}
 	}
 

@@ -64,10 +64,14 @@ class FLEdge extends Sprite {
 		graphics.lineStyle (2, color);
         graphics.moveTo(localA.x, localA.y);
         
-        var toHandle = if (edgeData.source.id != edgeData.sink.id) new Point(handle.x, handle.y) else new Point(); // will be filled in below
+        var handlePoint = new Point(handle.x, handle.y);
+        var len = Point.distance(new Point(), handlePoint);
+        handlePoint.normalize(2*len);
+
+        var toHandle = if (edgeData.source.id != edgeData.sink.id) new Point(handlePoint.x, handlePoint.y) else new Point(); // will be filled in below
 
         if (edgeData.source.id != edgeData.sink.id) {
-            graphics.curveTo(handle.x, handle.y, localB.x, localB.y);
+            graphics.curveTo(handlePoint.x, handlePoint.y, localB.x, localB.y);
         } else {
             var handleP = new Point(handle.x, handle.y);
             var subHandle = new Point(handle.x, handle.y);

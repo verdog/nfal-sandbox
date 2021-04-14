@@ -1,4 +1,8 @@
+import openfl.events.TextEvent;
+import openfl.text.TextField;
+import openfl.text.TextFieldType;
 import openfl.Assets;
+import openfl.events.Event;
 import format.SVG;
 import openfl.display.Sprite;
 
@@ -6,6 +10,7 @@ class FLGraphContainer extends Sprite {
     public var digraph:DiGraph; // underlying graph data
     public var edgesSprite(default, null):Sprite;
     public var verticesSprite(default, null):Sprite;
+    public var inputBox(default, null):TextField;
 
     function new() {
         super();
@@ -14,8 +19,24 @@ class FLGraphContainer extends Sprite {
         edgesSprite = new Sprite();
         verticesSprite = new Sprite();
 
+        inputBox = new TextField();
+		inputBox.selectable = true;
+        inputBox.mouseEnabled = true;
+        inputBox.type = TextFieldType.INPUT;
+        inputBox.width = 200;
+        inputBox.height = 40;
+        inputBox.background = true;
+        inputBox.backgroundColor = 0xaaaaaa;
+        inputBox.multiline = false;
+        inputBox.border = true;
+        inputBox.x = 64;
+        inputBox.y = 64;
+
         addChild(edgesSprite);
         addChild(verticesSprite);
+        addChild(inputBox);
+
+        addEventListener(Event.CHANGE, onChange);
 
         digraph = new DiGraph();
     }
@@ -63,8 +84,8 @@ class FLGraphContainer extends Sprite {
     }
 
     public function render() {
-        var minX = 300;
-        var minY = 300;
+        var minX = 100;
+        var minY = 200;
         var space = FLVertex.radius * 6;
         var placeX = minX;
         var placeY = minY;
@@ -78,6 +99,10 @@ class FLGraphContainer extends Sprite {
         edgesSprite.removeChildren();
 
         for (id => vert in digraph.vertices) {
+            if (vert.name == "{}") {
+                continue;
+            }
+
             var vertData = vert;
             var vertDisplay = new FLVertex(vertData);
 
@@ -105,6 +130,9 @@ class FLGraphContainer extends Sprite {
 
         for (id => edge in digraph.edges) {
             var edgeData = edge;
+            if (edge.sink.name == "{}") {
+                continue;
+            }
 
             var edgeIds = [edge.source.id, edge.sink.id];
             edgeIds.sort(function(x,y) return y - x);
@@ -152,5 +180,17 @@ class FLGraphContainer extends Sprite {
         }
 
         return null;
+    }
+
+    private function onChange(event:Event) {
+        trace(event);
+        trace('new text is ${inputBox.text}');
+    }
+
+    public function simulate() {
+        var input = inputBox.text;
+        trace('simulating $input');
+
+        digraph.simulate(input);
     }
 }

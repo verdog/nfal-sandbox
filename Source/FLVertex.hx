@@ -11,6 +11,7 @@ class FLVertex extends Sprite {
 
     private static var svg:SVG = null;
     
+    public var starting = false;
     private var text = null;
     public var vertexData(default, null):GraphVertex;
 
@@ -41,8 +42,14 @@ class FLVertex extends Sprite {
 
         if (vertexData.accepting == true) {
             graphics.moveTo(0, 0);
-            graphics.lineStyle(1, 0x00ffff);
-            graphics.drawCircle(0, 0, radius + 4);
+            graphics.lineStyle(3, 0x00ffff);
+            graphics.drawCircle(0, 0, radius - 6);
+        }
+
+        if (vertexData.starting == true) {
+            graphics.moveTo(0, 0);
+            graphics.lineStyle(3, 0x00ff00);
+            graphics.drawCircle(0, 0, radius - 10);
         }
     }
 
