@@ -305,6 +305,7 @@ class Main extends Sprite {
 		if (event.type == KeyboardEvent.KEY_UP && event.charCode == 100 && CTRL == true) {
 			graph.digraph = graph.digraph.toDFA();
 			graph.render();
+			graph.simReset();
 		}
 		// right
 		if (event.type == KeyboardEvent.KEY_UP && event.keyCode == 39) {

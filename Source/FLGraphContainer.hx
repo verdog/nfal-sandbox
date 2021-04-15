@@ -100,9 +100,9 @@ class FLGraphContainer extends Sprite {
         edgesSprite.removeChildren();
 
         for (id => vert in digraph.vertices) {
-            if (vert.name == "{}") {
-                continue;
-            }
+            // if (vert.name == "{}") {
+            //     continue;
+            // }
 
             var vertData = vert;
             var vertDisplay = new FLVertex(vertData);
@@ -124,6 +124,7 @@ class FLGraphContainer extends Sprite {
 
             if (vert.name == "{}") {
                 trap = vert;
+                vertDisplay.alpha = 0.25;
             }
         }
 
@@ -131,9 +132,9 @@ class FLGraphContainer extends Sprite {
 
         for (id => edge in digraph.edges) {
             var edgeData = edge;
-            if (edge.sink.name == "{}") {
-                continue;
-            }
+            // if (edge.sink.name == "{}") {
+            //     continue;
+            // }
 
             var edgeIds = [edge.source.id, edge.sink.id];
             edgeIds.sort(function(x,y) return y - x);
