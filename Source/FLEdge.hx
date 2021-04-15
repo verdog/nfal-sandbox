@@ -15,6 +15,8 @@ class FLEdge extends Sprite {
     public var fla(default, null):FLVertex;
     public var flb(default, null):FLVertex;
 
+    public var highlight(default, set):Int = 0;
+
     public function new (edgeData:GraphEdge, a:FLVertex, b:FLVertex) {
         super();
         this.edgeData = edgeData;
@@ -60,8 +62,10 @@ class FLEdge extends Sprite {
         var localA = globalToLocal(new Point(fla.x, fla.y));
         var localB = globalToLocal(new Point(flb.x, flb.y));
 
+        var color = if (highlight > 0) 0xffff00 else color;
+
         // draw line
-		graphics.lineStyle (2, color);
+		graphics.lineStyle (2 + 2*highlight, color);
         graphics.moveTo(localA.x, localA.y);
         
         var handlePoint = new Point(handle.x, handle.y);
@@ -126,5 +130,11 @@ class FLEdge extends Sprite {
         var x2 = point.x * Math.cos(rads) - point.y * Math.sin(rads);
         var y2 = point.x * Math.sin(rads) + point.y * Math.cos(rads);
         point.setTo(x2, y2);
+    }
+
+    private function set_highlight(h:Int) {
+        highlight = h;
+        render();
+        return h;
     }
 }

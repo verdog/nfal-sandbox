@@ -57,6 +57,7 @@ class Main extends Sprite {
 		graph.digraph.starting = start;
 
 		graph.render();
+		graph.simReset();
 		addChild(graph);
 	}
 
@@ -236,7 +237,7 @@ class Main extends Sprite {
 
 				changeState(IDLE);
 			case DRAGVERT:
-				if (Point.distance(dragStart, new Point(mouseX, mouseY)) < 10) {
+				if (Point.distance(dragStart, new Point(mouseX, mouseY)) < 5) {
 					currentlyDraggingVert.vertexData.accepting = !currentlyDraggingVert.vertexData.accepting;
 					currentlyDraggingVert.render();
 				}
@@ -259,10 +260,10 @@ class Main extends Sprite {
 						
 						for (edge in marked) {
 							graph.edgesSprite.removeChild(edge);
+							graph.digraph.deleteEdge(edge.edgeData);
 						}
 						
 						graph.verticesSprite.removeChild(vert);
-						
 						graph.deleteVertex(vert.vertexData);
 					}
 				}
@@ -305,9 +306,25 @@ class Main extends Sprite {
 			graph.digraph = graph.digraph.toDFA();
 			graph.render();
 		}
-		// s - simulate
-		if (event.type == KeyboardEvent.KEY_UP && event.charCode == 115 && CTRL == true) {
-			graph.simulate();
+		// right
+		if (event.type == KeyboardEvent.KEY_UP && event.keyCode == 39) {
+			if (CTRL == true) {
+				// complete sim
+				graph.simToEnd();
+			} else {
+				// single step forward
+				graph.simStepForward();
+			}
+		}
+		// left
+		if (event.type == KeyboardEvent.KEY_DOWN && event.keyCode == 37) {
+			if (CTRL == true) {
+				graph.simReset();
+				// reset sim
+			} else {
+				// single step backward
+				graph.simStepBackward();
+			}
 		}
 	}
 

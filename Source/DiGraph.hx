@@ -349,33 +349,45 @@ class DiGraph {
 			trace('$to [${node.name}, $input]');
 			to = "|- ";
 
-			var outgoing = getOutgoingEdges(node, c);
-			if (outgoing.length == 0) {
-				trace('nowhere to go on symbol ${c}!');
-			} else if (outgoing.length > 1) {
-				trace('more than one choice...');
-			} else {
-				// length one
-				var edge = edges[0];
-				node = edge.sink;
+			node = simulateStep(node, c);
+
+			if (node != null) {
 				input = input.substring(1);
 				jumped = true;
-			}
-
-			if (jumped == false) {
+			} else {
+				trace("node returned null, something went wrong.");
 				broken = true;
-				trace("broke simulation");
 				break;
 			}
 		}
 
-		trace('$to [${node.name}, $input]');
-
-		trace('Ended ${if (broken == true) "broken " else ""}on state ${node.name} which is ${if (node.accepting == true) "" else "not "}accepting');
-		trace('${if (node.accepting == true) "ACCEPT" else "REJECT"}');
+		if (node != null) {
+			trace('$to [${node.name}, $input]');
+			trace('Ended on state ${node.name} which is ${if (node.accepting == true) "" else "not "}accepting');
+			trace('${if (node.accepting == true) "ACCEPT" else "REJECT"}');
+		} else {
+			trace ('Ended in a broken state');
+		}
 	}
 
-	private function getOutgoingEdges(vert:GraphVertex, symbol:String = null) {
+	public function simulateStep(vert:GraphVertex, symbol:String) {
+		if (symbol == "*") return null;
+
+		var outgoing = getOutgoingEdges(vert, symbol);
+		if (outgoing.length == 0) {
+			trace('${vert.name}: nowhere to go on symbol ${symbol}!');
+			return null;
+		} else if (outgoing.length > 1) {
+			trace('more than one choice...');
+			return null;
+		} else {
+			// length one
+			var edge = outgoing[0];
+			return edge.sink;
+		}
+	}
+
+	public function getOutgoingEdges(vert:GraphVertex, symbol:String = null) {
 		var edges = [];
 
 		for (id => edge in this.edges) {

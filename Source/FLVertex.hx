@@ -14,6 +14,7 @@ class FLVertex extends Sprite {
     public var starting = false;
     private var text = null;
     public var vertexData(default, null):GraphVertex;
+    public var highlight(default, set):Int = 0;
 
     public function new (vertexData:GraphVertex) {
         super();
@@ -51,9 +52,21 @@ class FLVertex extends Sprite {
             graphics.lineStyle(3, 0x00ff00);
             graphics.drawCircle(0, 0, radius - 10);
         }
+
+        for (r in 0...highlight) {
+            graphics.moveTo(0, 0);
+            graphics.lineStyle(3, 0xffff00);
+            graphics.drawCircle(0, 0, radius + 3 + r*2);
+        }
     }
 
     private function loadSVG() {
         svg = new SVG(Assets.getText("assets/circle.svg"));
+    }
+
+    private function set_highlight(h:Int) {
+        highlight = h;
+        render();
+        return h;
     }
 }

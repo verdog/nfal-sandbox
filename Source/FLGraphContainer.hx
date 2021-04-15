@@ -1,3 +1,4 @@
+import haxe.ds.GenericStack;
 import openfl.events.TextEvent;
 import openfl.text.TextField;
 import openfl.text.TextFieldType;
@@ -161,6 +162,8 @@ class FLGraphContainer extends Sprite {
     }
 
     public function reverseLookupVertex(v:GraphVertex) {
+        if (v == null) return null;
+        
         for (i in 0...verticesSprite.numChildren) {
             var vert:FLVertex = cast verticesSprite.getChildAt(i);
             if (vert.vertexData.id == v.id) {
@@ -171,7 +174,9 @@ class FLGraphContainer extends Sprite {
         return null;
     }
 
-    public function reveseLookupEdge(e:GraphEdge) {
+    public function reverseLookupEdge(e:GraphEdge) {
+        if (e == null) return null;
+
         for (i in 0...edgesSprite.numChildren) {
             var edge:FLEdge = cast edgesSprite.getChildAt(i);
             if (edge.edgeData.id == e.id) {
@@ -186,11 +191,68 @@ class FLGraphContainer extends Sprite {
         trace(event);
         trace('new text is ${inputBox.text}');
     }
+    
+    // sim stuffs
+    var simStack(default, null) = new Array<FLVertex>();
+    var simInputIndex = 0;
 
-    public function simulate() {
-        var input = inputBox.text;
-        trace('simulating $input');
+    public function simReset() {
+        for (flvert in simStack) {
+            flvert.highlight = 0;
+        }
+        for (i in 0...edgesSprite.numChildren) {
+            var fledge:FLEdge = cast edgesSprite.getChildAt(i);
+            fledge.highlight = 0;
+        }
+        simStack = new Array<FLVertex>();
+        simStack.push(reverseLookupVertex(digraph.starting));
+        simInputIndex = 0;
+    }
 
-        digraph.simulate(input);
+    public function simToEnd() {
+        while (simStepForward() != null) {};
+        trace('sim to end');
+    }
+
+    public function simStepForward() {
+        if (simInputIndex >= inputBox.text.length || simInputIndex >= inputBox.text.length) {
+            return null;
+        }
+
+        var vert = simStack[simStack.length - 1].vertexData;
+        var symbol = inputBox.text.charAt(simInputIndex);
+
+        var next = digraph.simulateStep(vert, symbol);
+        var FLnext = reverseLookupVertex(next);
+
+        if (next != null) {
+            var fledge = reverseLookupEdge(digraph.getOutgoingEdges(vert, symbol)[0]);
+            fledge.highlight++;
+
+            simStack.push(FLnext);
+            simInputIndex++;
+            FLnext.highlight++;
+        } else {
+            // couldn't advance, do nothing
+        }
+
+        trace('stepped forward on $symbol to $next');
+
+        return next;
+    }
+
+    public function simStepBackward() {
+        if (simStack.length > 1) {
+            var vert = simStack.pop();
+            vert.highlight--;
+            simInputIndex--;
+
+            var current = simStack[simStack.length - 1];
+            var fledge = 
+                reverseLookupEdge(digraph.getOutgoingEdges(current.vertexData, inputBox.text.charAt(simInputIndex))[0]);
+            fledge.highlight--;
+        }
+
+        trace('stepped backward');
     }
 }
