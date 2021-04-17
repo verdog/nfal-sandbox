@@ -155,11 +155,11 @@ class DiGraph {
 		return count;
 	}
 
-	public function toDFA() {
+	public function toDFA(extra:String = "") {
 		var DFA = new DiGraph();
 		var workStack = new GenericStack<GraphVertex>();
 		var done = new Map<Int, GraphVertex>();
-		var alpha = deduceAlphabet();
+		var alpha = deduceAlphabet(extra);
 		var nodeSets = new Map<Int, Map<Int, GraphVertex>>();
 
 		var nameFromSet = function(set:Map<Int, GraphVertex>) {
@@ -270,11 +270,16 @@ class DiGraph {
 		return DFA;
 	}
 
-	public function deduceAlphabet() {
+	public function deduceAlphabet(extra:String = "") {
 		var alpha = new Map<String, Bool>();
 
 		for (edge in edges) {
 			alpha.set(edge.symbol, true);
+		}
+
+		for (i in 0...extra.length) {
+			var c = extra.charAt(i);
+			alpha.set(c, true);
 		}
 
 		alpha.remove("*"); // no * in dfas

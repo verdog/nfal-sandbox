@@ -41,7 +41,7 @@ class Main extends Sprite {
 
 	static var CTRL:Bool = false;
 
-	private function restart() {
+	public function restart() {
 		initData();
 		initState();
 	}
@@ -59,6 +59,10 @@ class Main extends Sprite {
 		graph.render();
 		graph.simReset();
 		addChild(graph);
+
+		ui = new UI(graph, stage.stageWidth, 60);
+		addChild(ui);
+		ui.render();
 	}
 
 	private function initState() {
@@ -67,6 +71,9 @@ class Main extends Sprite {
 		stateText.mouseEnabled = false;
 		stateText.selectable = false;
 		stateText.width = 128;
+
+		// disable state text...
+		stateText.alpha = 0;
 
 		changeState(IDLE);
 		addChild(stateText);
@@ -286,6 +293,7 @@ class Main extends Sprite {
 			default:
 				// nothing
 		}
+		ui.updateStatus();
 	}
 
 	private function onKey(event:KeyboardEvent) {
@@ -303,7 +311,7 @@ class Main extends Sprite {
 		}
 		// d - dfa
 		if (event.type == KeyboardEvent.KEY_UP && event.charCode == 100 && CTRL == true) {
-			graph.digraph = graph.digraph.toDFA();
+			graph.digraph = graph.digraph.toDFA(graph.input);
 			graph.render();
 			graph.simReset();
 		}
@@ -327,6 +335,8 @@ class Main extends Sprite {
 				graph.simStepBackward();
 			}
 		}
+
+		ui.updateStatus();
 	}
 
 	private function getThingFromThings<T:DisplayObject>(clss:Class<T>, things:Array<DisplayObject>):T {

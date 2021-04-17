@@ -16,4 +16,9 @@
 + clearly mark starting state
 + make handle distance squared
 + fix arrow directions
-- make things look nicer
++ make things look nicer
+    + make svg for buttons
+    + make ui object
+- regex conversions
+    - nfa to regex
+    - regex to nfa

@@ -7,37 +7,23 @@ import openfl.events.Event;
 import format.SVG;
 import openfl.display.Sprite;
 
+using StringTools;
+
 class FLGraphContainer extends Sprite {
     public var digraph:DiGraph; // underlying graph data
     public var edgesSprite(default, null):Sprite;
     public var verticesSprite(default, null):Sprite;
-    public var inputBox(default, null):TextField;
+    public var input:String;
 
-    function new() {
+    public function new() {
         super();
         trace("Creating new FLGraph");
 
         edgesSprite = new Sprite();
         verticesSprite = new Sprite();
 
-        inputBox = new TextField();
-		inputBox.selectable = true;
-        inputBox.mouseEnabled = true;
-        inputBox.type = TextFieldType.INPUT;
-        inputBox.width = 200;
-        inputBox.height = 40;
-        inputBox.background = true;
-        inputBox.backgroundColor = 0xaaaaaa;
-        inputBox.multiline = false;
-        inputBox.border = true;
-        inputBox.x = 64;
-        inputBox.y = 64;
-
         addChild(edgesSprite);
         addChild(verticesSprite);
-        addChild(inputBox);
-
-        addEventListener(Event.CHANGE, onChange);
 
         digraph = new DiGraph();
     }
@@ -187,11 +173,6 @@ class FLGraphContainer extends Sprite {
 
         return null;
     }
-
-    private function onChange(event:Event) {
-        trace(event);
-        trace('new text is ${inputBox.text}');
-    }
     
     // sim stuffs
     var simStack(default, null) = new Array<FLVertex>();
@@ -208,20 +189,24 @@ class FLGraphContainer extends Sprite {
         simStack = new Array<FLVertex>();
         simStack.push(reverseLookupVertex(digraph.starting));
         simInputIndex = 0;
+
+        return true;
     }
 
     public function simToEnd() {
-        while (simStepForward() != null) {};
+        while (simStepForward() != false) {};
         trace('sim to end');
+
+        return true;
     }
 
     public function simStepForward() {
-        if (simInputIndex >= inputBox.text.length || simInputIndex >= inputBox.text.length) {
-            return null;
+        if (simInputIndex >= input.length || simInputIndex >= input.length) {
+            return false;
         }
 
         var vert = simStack[simStack.length - 1].vertexData;
-        var symbol = inputBox.text.charAt(simInputIndex);
+        var symbol = input.charAt(simInputIndex);
 
         var next = digraph.simulateStep(vert, symbol);
         var FLnext = reverseLookupVertex(next);
@@ -235,11 +220,12 @@ class FLGraphContainer extends Sprite {
             FLnext.highlight++;
         } else {
             // couldn't advance, do nothing
+            return false;
         }
 
         trace('stepped forward on $symbol to $next');
 
-        return next;
+        return true;
     }
 
     public function simStepBackward() {
@@ -250,10 +236,29 @@ class FLGraphContainer extends Sprite {
 
             var current = simStack[simStack.length - 1];
             var fledge = 
-                reverseLookupEdge(digraph.getOutgoingEdges(current.vertexData, inputBox.text.charAt(simInputIndex))[0]);
-            fledge.highlight--;
+                reverseLookupEdge(digraph.getOutgoingEdges(current.vertexData, input.charAt(simInputIndex))[0]);
+            if (fledge != null) {
+                fledge.highlight--;
+            }
+        } else {
+            return false;
         }
 
         trace('stepped backward');
+        return true;
+    }
+
+    public function getSimString() {
+        var current = simStack[simStack.length - 1];
+        var currentString = input.substring(simInputIndex);
+        var currentName = current.vertexData.name;
+        var currentName = if (currentName.length > 10) '${currentName.substring(0, 10)}...' else currentName;
+
+        return '[#
+            ${currentName},#
+            ${if (currentString.length > 0) currentString else "*"} 
+        #]&${if (current.vertexData.accepting == true) "ACCEPT" else "REJECT"}'
+        .replace("\n", "").replace(" ", "").replace("#", " ").replace("&", "\n")
+        ;
     }
 }
