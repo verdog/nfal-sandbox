@@ -62,7 +62,7 @@ class FLEdge extends Sprite {
         var localA = globalToLocal(new Point(fla.x, fla.y));
         var localB = globalToLocal(new Point(flb.x, flb.y));
 
-        var color = if (highlight > 0) 0xffff00 else color;
+        var color = if (highlight > 0) 0xaa0000 else color;
 
         // draw line
 		graphics.lineStyle (2 + 2*highlight, color);
