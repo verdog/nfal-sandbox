@@ -87,7 +87,7 @@ class UI extends Sprite {
 		var y1 = stage.stageHeight - uiHeight;
 
 		// background
-		graphics.beginFill(0xbbbbbb);
+		graphics.beginFill(0xcccccc);
 		graphics.drawRect(0, 0, uiWidth, uiHeight);
 
 		x = x1;

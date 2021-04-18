@@ -18,7 +18,7 @@
 
 	<haxedef name="debug" if="debug" />
 
-	<window background="#cccccc" />
-	<window width="1080" height="720" />
-	<!-- <window width="0" height="0" if="html5" /> -->
+	<window background="#888899" />
+	<window width="1080" height="720" if="desktop" />
+	<window width="0" height="0" if="html5" />
 </project>

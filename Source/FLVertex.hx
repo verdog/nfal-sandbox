@@ -55,7 +55,7 @@ class FLVertex extends Sprite {
 
         for (r in 0...highlight) {
             graphics.moveTo(0, 0);
-            graphics.lineStyle(3, 0xaa0000);
+            graphics.lineStyle(3, 0xffff00);
             graphics.drawCircle(0, 0, radius + 3 + r*2);
         }
     }
