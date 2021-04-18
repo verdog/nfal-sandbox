@@ -6,7 +6,7 @@ import openfl.text.TextFieldAutoSize;
 import openfl.display.Sprite;
 
 class FLEdge extends Sprite {
-    public static var color = 0x777777;
+    public static var color = 0x999999;
 
     public var textF(default, null):TextField;
     public var handle:FLEdgeHandle;
