@@ -1,6 +1,6 @@
 # nfal-sandbox
 
-Tool for visulizing NFA-lambda state machines and converting them to DFAs.
+Tool for visualizing NFA-lambda state machines and converting them to DFAs.
 
 ## Build
 
