@@ -1,5 +1,7 @@
 # nfal-sandbox
 
+Tool for visulizing NFA-lambda state machines and converting them to DFAs.
+
 ## Build
 
 Install haxe and get openfl from haxelib:
